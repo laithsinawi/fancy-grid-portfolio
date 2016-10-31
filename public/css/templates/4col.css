@@ -1,0 +1,25 @@
+#fgp-gallery li {
+    width: 23%;
+}
+
+@media(max-width: 768px) {
+    #fgp-gallery li {
+        width: 48%;
+        margin-right: 8px;
+    }
+}
+
+@media(max-width: 568px) {
+
+    #fgp-gallery li {
+        width: 100%;
+        margin: 0;
+    }
+    #fgp-filters {
+        margin: 0;
+    }
+
+    #fgp-portfolio {
+        text-align: left;
+    }
+}
