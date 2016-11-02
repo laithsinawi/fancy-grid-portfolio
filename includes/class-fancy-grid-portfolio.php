@@ -153,6 +153,11 @@ class Fancy_Grid_Portfolio {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_cpts_portfolio_item');
+		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_category');
+
+		$this->loader->add_action( 'manage_portfolio_item_posts_columns', $plugin_admin, 'fgp_columns_header', 10);
+		$this->loader->add_action( 'manage_portfolio_item_posts_custom_column', $plugin_admin, 'fgp_columns_content', 10, 2);
 
 	}
 
