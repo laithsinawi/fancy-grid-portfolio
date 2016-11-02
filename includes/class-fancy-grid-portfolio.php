@@ -119,6 +119,8 @@ class Fancy_Grid_Portfolio {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-fancy-grid-portfolio-public.php';
 
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'lib/advanced-custom-fields/acf.php';
+
 		$this->loader = new Fancy_Grid_Portfolio_Loader();
 
 	}
@@ -151,13 +153,21 @@ class Fancy_Grid_Portfolio {
 
 		$plugin_admin = new Fancy_Grid_Portfolio_Admin( $this->get_plugin_name(), $this->get_version() );
 
+		// Enqueue scripts
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
+
+		// Custom post type
 		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_cpts_portfolio_item');
 		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_category');
 
+		// Custom post admin columns
 		$this->loader->add_action( 'manage_portfolio_item_posts_columns', $plugin_admin, 'fgp_columns_header', 10);
 		$this->loader->add_action( 'manage_portfolio_item_posts_custom_column', $plugin_admin, 'fgp_columns_content', 10, 2);
+
+		// Options page
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_page');
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'page_init');
 
 	}
 

@@ -23,6 +23,11 @@
 class Fancy_Grid_Portfolio_Admin {
 
 	/**
+	 * Holds the values to be used in the fields callbacks
+	 */
+	private $options;
+
+	/**
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
@@ -113,7 +118,7 @@ class Fancy_Grid_Portfolio_Admin {
 	}
 
 	/**
-	 * Register custom post type portfolio_item
+	 * Register custom post type portfolio_item and fields
 	 */
 	public function cptui_register_my_cpts_portfolio_item() {
 		$labels = array(
@@ -131,8 +136,8 @@ class Fancy_Grid_Portfolio_Admin {
 			"show_ui"             => true,
 			"show_in_rest"        => false,
 			"rest_base"           => "",
-			"has_archive"         => true,
-			"show_in_menu"        => true,
+			"has_archive"         => false,
+			"show_in_menu"        => false,
 			"exclude_from_search" => true,
 			"capability_type"     => "post",
 			"map_meta_cap"        => true,
@@ -141,9 +146,48 @@ class Fancy_Grid_Portfolio_Admin {
 			"query_var"           => true,
 			"menu_position"       => 5,
 			"menu_icon"           => "dashicons-images-alt2",
-			"supports"            => array( "title", "thumbnail" ),
+			"supports"            => array( "title", "thumbnail" )
 		);
 		register_post_type( "portfolio_item", $args );
+
+		if(function_exists("register_field_group"))
+		{
+			register_field_group(array (
+				'id' => 'acf_portfolio-item-fields',
+				'title' => 'Portfolio Item Fields',
+				'fields' => array (
+					array (
+						'key' => 'field_58192670e2ee2',
+						'label' => 'Project Details',
+						'name' => 'project_details',
+						'type' => 'textarea',
+						'default_value' => '',
+						'placeholder' => '',
+						'maxlength' => '',
+						'rows' => '',
+						'formatting' => 'br',
+					),
+				),
+				'location' => array (
+					array (
+						array (
+							'param' => 'post_type',
+							'operator' => '==',
+							'value' => 'portfolio_item',
+							'order_no' => 0,
+							'group_no' => 0,
+						),
+					),
+				),
+				'options' => array (
+					'position' => 'normal',
+					'layout' => 'no_box',
+					'hide_on_screen' => array (
+					),
+				),
+				'menu_order' => 0,
+			));
+		}
 
 	}
 
@@ -161,7 +205,6 @@ class Fancy_Grid_Portfolio_Admin {
 			"labels"             => $labels,
 			"public"             => false,
 			"hierarchical"       => false,
-			"label"              => "Portfolio Categories",
 			"show_ui"            => true,
 			"show_in_menu"       => true,
 			"show_in_nav_menus"  => false,
@@ -219,4 +262,169 @@ class Fancy_Grid_Portfolio_Admin {
 		echo $output;
 	}
 
+
+	/************** OPTION PAGE RELATED METHODS *******************/
+
+	/**
+	 * Add options page
+	 */
+	public function add_plugin_page() {
+		// This page will in admin mainn menu
+		add_menu_page(
+			'Grid Portfolio - Dashboard',
+			'Grid Portfolio',
+			'manage_options',
+			$this->plugin_name,
+			array( $this, 'create_admin_page' ),
+			'dashicons-images-alt2',
+			5
+		);
+
+		add_submenu_page(
+			$this->plugin_name,
+			'TEST',
+			__( 'Dashboard' ),
+			'manage_options',
+			$this->plugin_name,
+			array( $this, 'create_admin_page' )
+		);
+
+		add_submenu_page(
+			$this->plugin_name,
+			__( 'Portfolio Items' ),
+			__( 'Portfolio Items' ),
+			'manage_options',
+			'edit.php?post_type=portfolio_item',
+			null
+		);
+
+		add_submenu_page(
+			$this->plugin_name,
+			__( 'Drag Drop Sort' ),
+			__( 'Drag Drop Sort' ),
+			'manage_options',
+			'custom-order',
+			array( $this, 'fgp_reorder_portfolio_callback' )
+		);
+
+		add_submenu_page(
+			$this->plugin_name,
+			__( 'Portfolio Categories' ),
+			__( 'Portfolio Categories' ),
+			'manage_options',
+			'edit-tags.php?taxonomy=portfolio_category',
+			null
+		);
+
+	}
+
+	/**
+	 * Options page callback
+	 */
+	public function create_admin_page() {
+		// Set class property
+		$this->options = get_option( 'my_option_name' );
+		?>
+		<div class="wrap">
+			<h1>My Settings</h1>
+			<form method="post" action="options.php">
+				<?php
+				// This prints out all hidden setting fields
+				settings_fields( 'my_option_group' );
+				do_settings_sections( 'my-setting-admin' );
+				submit_button();
+				?>
+			</form>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Register and add settings
+	 */
+	public function page_init() {
+		register_setting(
+			'my_option_group', // Option group
+			'my_option_name', // Option name
+			array( $this, 'sanitize' ) // Sanitize
+		);
+
+		add_settings_section(
+			'setting_section_id', // ID
+			'My Custom Settings', // Title
+			array( $this, 'print_section_info' ), // Callback
+			$this->plugin_name // Page
+		);
+
+		add_settings_field(
+			'id_number', // ID
+			'ID Number', // Title
+			array( $this, 'id_number_callback' ), // Callback
+			$this->plugin_name, // Page
+			'setting_section_id' // Section
+		);
+
+		add_settings_field(
+			'title',
+			'Title',
+			array( $this, 'title_callback' ),
+			$this->plugin_name,
+			'setting_section_id'
+		);
+
+	}
+
+	/**
+	 * Sanitize each setting field as needed
+	 *
+	 * @param array $input Contains all settings fields as array keys
+	 */
+	public function sanitize( $input ) {
+		$new_input = array();
+		if ( isset( $input['id_number'] ) ) {
+			$new_input['id_number'] = absint( $input['id_number'] );
+		}
+
+		if ( isset( $input['title'] ) ) {
+			$new_input['title'] = sanitize_text_field( $input['title'] );
+		}
+
+		return $new_input;
+	}
+
+	/**
+	 * Print the Section text
+	 */
+	public function print_section_info() {
+		print 'Enter your settings below:';
+	}
+
+	/**
+	 * Get the settings option array and print one of its values
+	 */
+	public function id_number_callback() {
+		printf(
+			'<input type="text" id="id_number" name="my_option_name[id_number]" value="%s" />',
+			isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number'] ) : ''
+		);
+	}
+
+	/**
+	 * Get the settings option array and print one of its values
+	 */
+	public function title_callback() {
+		printf(
+			'<input type="text" id="title" name="my_option_name[title]" value="%s" />',
+			isset( $this->options['title'] ) ? esc_attr( $this->options['title'] ) : ''
+		);
+	}
+
+	/*
+ * List portfolio items for drag drop reorder
+ */
+	function fgp_reorder_portfolio_callback() {
+
+		include_once 'partials/fancy-grid-portfolio-reorder.php';
+
+	}
 }

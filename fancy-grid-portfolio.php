@@ -31,6 +31,11 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 /**
+ * Define constants
+ */
+define( 'ACF_LITE', true );
+
+/**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-fancy-grid-portfolio-activator.php
  */
