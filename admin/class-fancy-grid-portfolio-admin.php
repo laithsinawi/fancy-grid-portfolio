@@ -268,14 +268,14 @@ class Fancy_Grid_Portfolio_Admin {
 	/**
 	 * Add options page
 	 */
-	public function add_plugin_page() {
+	public function fgp_add_plugin_page() {
 		// This page will in admin mainn menu
 		add_menu_page(
 			'Grid Portfolio - Dashboard',
 			'Grid Portfolio',
 			'manage_options',
 			$this->plugin_name,
-			array( $this, 'create_admin_page' ),
+			array( $this, 'fgp_create_admin_page' ),
 			'dashicons-images-alt2',
 			5
 		);
@@ -286,7 +286,7 @@ class Fancy_Grid_Portfolio_Admin {
 			__( 'Dashboard' ),
 			'manage_options',
 			$this->plugin_name,
-			array( $this, 'create_admin_page' )
+			array( $this, 'fgp_create_admin_page' )
 		);
 
 		add_submenu_page(
@@ -321,17 +321,17 @@ class Fancy_Grid_Portfolio_Admin {
 	/**
 	 * Options page callback
 	 */
-	public function create_admin_page() {
+	public function fgp_create_admin_page() {
 		// Set class property
 		$this->options = get_option( 'my_option_name' );
 		?>
 		<div class="wrap">
-			<h1>My Settings</h1>
+			<h1>Settings</h1>
 			<form method="post" action="options.php">
 				<?php
 				// This prints out all hidden setting fields
 				settings_fields( 'my_option_group' );
-				do_settings_sections( 'my-setting-admin' );
+				do_settings_sections( $this->plugin_name );
 				submit_button();
 				?>
 			</form>
@@ -342,16 +342,16 @@ class Fancy_Grid_Portfolio_Admin {
 	/**
 	 * Register and add settings
 	 */
-	public function page_init() {
+	public function fgp_register_settings() {
 		register_setting(
-			'my_option_group', // Option group
-			'my_option_name', // Option name
+			'fgp_settings_group', // Option group
+			'fgp_settings', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
 		add_settings_section(
-			'setting_section_id', // ID
-			'My Custom Settings', // Title
+			'fgp_settings_section', // ID
+			'Fancy Grid Portfolio', // Title
 			array( $this, 'print_section_info' ), // Callback
 			$this->plugin_name // Page
 		);
@@ -361,7 +361,7 @@ class Fancy_Grid_Portfolio_Admin {
 			'ID Number', // Title
 			array( $this, 'id_number_callback' ), // Callback
 			$this->plugin_name, // Page
-			'setting_section_id' // Section
+			'fgp_settings_section' // Section
 		);
 
 		add_settings_field(
@@ -369,7 +369,7 @@ class Fancy_Grid_Portfolio_Admin {
 			'Title',
 			array( $this, 'title_callback' ),
 			$this->plugin_name,
-			'setting_section_id'
+			'fgp_settings_section'
 		);
 
 	}
@@ -396,7 +396,9 @@ class Fancy_Grid_Portfolio_Admin {
 	 * Print the Section text
 	 */
 	public function print_section_info() {
-		print 'Enter your settings below:';
+
+		include_once 'partials/fancy-grid-portfolio-section-info.php';
+
 	}
 
 	/**

@@ -166,8 +166,8 @@ class Fancy_Grid_Portfolio {
 		$this->loader->add_action( 'manage_portfolio_item_posts_custom_column', $plugin_admin, 'fgp_columns_content', 10, 2);
 
 		// Options page
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'add_plugin_page');
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'page_init');
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'fgp_add_plugin_page');
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_register_settings');
 
 	}
 
