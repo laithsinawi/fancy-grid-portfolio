@@ -173,7 +173,14 @@ class Fancy_Grid_Portfolio {
 		$this->loader->add_action( 'wp_ajax_save_order', $plugin_admin, 'fgp_save_order' );
 
 		// Image crop for thumbnails
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_set_thumbnail_crop_sizes');
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_set_thumbnail_crop_sizes' );
+
+		// Move featured image metabox
+		$this->loader->add_filter( 'do_meta_boxes', $plugin_admin, 'fgp_relocate_featured_image_metabox' );
+
+		// Misc fixes
+		$this->loader->add_filter( 'wp_calculate_image_srcset', $plugin_admin, 'ssl_srcset' );
+		$this->loader->add_filter( 'pre_get_posts', $plugin_admin, 'fgp_tag_posts_per_page' );
 
 	}
 

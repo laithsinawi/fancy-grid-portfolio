@@ -167,7 +167,7 @@ class Fancy_Grid_Portfolio_Admin {
 					array(
 						'key'           => 'field_58192670e2ee2',
 						'label'         => 'Project Details',
-						'name'          => 'project_details',
+						'name'          => 'details',
 						'type'          => 'textarea',
 						'default_value' => '',
 						'placeholder'   => '',
@@ -588,4 +588,41 @@ class Fancy_Grid_Portfolio_Admin {
 		add_image_size( 'fgp_thumbnail', $crop_width, $crop_height, array( 'top', 'center' ) );
 	}
 
+	/** Force URLs in srcset attributes into HTTPS scheme.* This is particularly useful when you're running a Flexible SSL frontend like Cloudflare
+	 *
+	 * Reference: https://wptavern.com/how-to-fix-images-not-loading-in-wordpress-4-4-while-using-ssl
+	 */
+
+	public function ssl_srcset( $sources ) {
+		if ( function_exists( 'is_ssl' ) && is_ssl() ) {
+			foreach ( $sources as &$source ) {
+				$source['url'] = set_url_scheme( $source['url'], 'https' );
+			}
+		}
+
+		return $sources;
+	}
+
+	/**
+	 * Move featured image metabox to main section
+	 */
+	public function fgp_relocate_featured_image_metabox() {
+		remove_meta_box( 'postimagediv', 'portfolio_item', 'side' );
+		add_meta_box( 'postimagediv', __( 'Portfolio Item Image' ), 'post_thumbnail_meta_box', 'portfolio_item', 'normal', 'low' );
+	}
+
+	/**
+	 * Override posts per page from WordPress Reading page setting
+	 * so portfolio reorder page shows all posts
+	 */
+	public function fgp_tag_posts_per_page( $query ) {
+
+		if ( is_admin() ) {
+			if ( ! empty( $_GET['page'] ) && $_GET['page'] == 'custom-order' ) {
+				$query->set( 'posts_per_page', 500 );
+			}
+		}
+
+		return;
+	}
 }

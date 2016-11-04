@@ -200,7 +200,7 @@ class Fancy_Grid_Portfolio_Public {
 
 				$thumb        = wp_get_attachment_image_src( get_post_thumbnail_id(), 'fgp_thumbnail' );
 				$full         = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full' );
-				$project_desc = get_post_meta( get_the_ID(), 'project_details', true );
+				$project_desc = get_post_meta( get_the_ID(), 'details', true );
 				$output .= '<li class="mix' . $filter_classes . '">';
 				$output .= '<a href="' . $full[0] . '" data-lightbox="projects" data-title="' . get_the_title() . '" data-desc="' . $project_desc . '">';
 				$output .= '<img src="' . $thumb[0] . '"></a></li>';
