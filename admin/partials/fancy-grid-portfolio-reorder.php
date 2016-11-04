@@ -1,7 +1,7 @@
 <?php
 $args = array(
 	'post_type'              => 'portfolio_item',
-	'order_by'               => 'menu_order',
+	'orderby'               => 'menu_order',
 	'order'                  => 'ASC',
 	'post_status'            => 'publish',
 	'no_found_rows'          => true,

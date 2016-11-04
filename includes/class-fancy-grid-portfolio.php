@@ -35,7 +35,7 @@ class Fancy_Grid_Portfolio {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      Fancy_Grid_Portfolio_Loader    $loader    Maintains and registers all hooks for the plugin.
+	 * @var      Fancy_Grid_Portfolio_Loader $loader Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
 
@@ -44,7 +44,7 @@ class Fancy_Grid_Portfolio {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
+	 * @var      string $plugin_name The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
 
@@ -53,7 +53,7 @@ class Fancy_Grid_Portfolio {
 	 *
 	 * @since    1.0.0
 	 * @access   protected
-	 * @var      string    $version    The current version of the plugin.
+	 * @var      string $version The current version of the plugin.
 	 */
 	protected $version;
 
@@ -69,7 +69,7 @@ class Fancy_Grid_Portfolio {
 	public function __construct() {
 
 		$this->plugin_name = 'fancy-grid-portfolio';
-		$this->version = '2.0.0';
+		$this->version     = '2.0.0';
 
 		$this->load_dependencies();
 		$this->set_locale();
@@ -158,19 +158,22 @@ class Fancy_Grid_Portfolio {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		// Custom post type
-		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_cpts_portfolio_item');
-		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_category');
+		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_cpts_portfolio_item' );
+		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_category' );
 
 		// Custom post admin columns
-		$this->loader->add_action( 'manage_portfolio_item_posts_columns', $plugin_admin, 'fgp_columns_header', 10);
-		$this->loader->add_action( 'manage_portfolio_item_posts_custom_column', $plugin_admin, 'fgp_columns_content', 10, 2);
+		$this->loader->add_action( 'manage_portfolio_item_posts_columns', $plugin_admin, 'fgp_columns_header', 10 );
+		$this->loader->add_action( 'manage_portfolio_item_posts_custom_column', $plugin_admin, 'fgp_columns_content', 10, 2 );
 
 		// Options page
-		$this->loader->add_action( 'admin_menu', $plugin_admin, 'fgp_add_plugin_page');
-		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_register_settings');
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'fgp_add_plugin_page' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_register_settings' );
 
 		// Save reorder items
-		$this->loader->add_action( 'wp_ajax_save_order', $plugin_admin, 'fgp_save_order');
+		$this->loader->add_action( 'wp_ajax_save_order', $plugin_admin, 'fgp_save_order' );
+
+		// Image crop for thumbnails
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_set_thumbnail_crop_sizes');
 
 	}
 
@@ -187,6 +190,8 @@ class Fancy_Grid_Portfolio {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'init', $plugin_public, 'register_shortcodes' );
 
 	}
 

@@ -107,14 +107,16 @@ class Fancy_Grid_Portfolio_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name . '_admin_js', plugin_dir_url( __FILE__ ) . 'js/fancy-grid-portfolio-admin.js', array(
-			'jquery',
-			'jquery-ui-sortable'
-		), $this->version, true );
+		wp_enqueue_script( $this->plugin_name . '-admin-js',
+			plugin_dir_url( __FILE__ ) . 'js/fancy-grid-portfolio-admin.js',
+			array(
+				'jquery',
+				'jquery-ui-sortable'
+			),
+			$this->version,
+			true
+		);
 
-		/**
-		 * TODO: enqueue ajax script
-		 */
 		wp_localize_script( $this->plugin_name . '_admin_js',
 			'FGP_PORTFOLIO',
 			array(
@@ -363,7 +365,7 @@ class Fancy_Grid_Portfolio_Admin {
 		);
 
 		add_settings_section(
-			$this->plugin_name, // ID
+			$this->plugin_name . '_info', // ID
 			'How to Use', // Title
 			array( $this, 'print_section_info' ), // Callback
 			$this->plugin_name // Page
@@ -471,7 +473,7 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_thumbcrop_width_callback( $args ) {
 		$description = $args['desc'];
 		printf(
-			'<input type="text" id="fgp_thumbcrop_width" name="fgp_option_name[fgp_thumbcrop_width]" value="%s" /> px
+			'<input type="text" id="fgp_option_name[fgp_thumbcrop_width]" name="fgp_option_name[fgp_thumbcrop_width]" value="%s" /> px
 			<p class="description">%s</p>',
 			! empty( $this->options['fgp_thumbcrop_width'] ) ? esc_attr( $this->options['fgp_thumbcrop_width'] ) : 400,
 			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
@@ -484,7 +486,7 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_thumbcrop_height_callback( $args ) {
 		$description = $args['desc'];
 		printf(
-			'<input type="text" id="fgp_thumbcrop_height" name="fgp_option_name[fgp_thumbcrop_height]" value="%s" /> px
+			'<input type="text" id="fgp_option_name[fgp_thumbcrop_height]" name="fgp_option_name[fgp_thumbcrop_height]" value="%s" /> px
 			<p class="description">%s</p>',
 			! empty( $this->options['fgp_thumbcrop_height'] ) ? esc_attr( $this->options['fgp_thumbcrop_height'] ) : 300,
 			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
@@ -498,7 +500,7 @@ class Fancy_Grid_Portfolio_Admin {
 		$description = isset( $args['desc'] ) ? $args['desc'] : '';
 		$num_columns = isset( $this->options['fgp_num_cols'] ) ? $this->options['fgp_num_cols'] : 3;
 		?>
-		<select name="fgp_option_name[fgp_num_cols]" id="fgp_num_cols">
+		<select name="fgp_option_name[fgp_num_cols]" id="fgp_option_name[fgp_num_cols]">
 			<option value="2" <?php if ( $num_columns == 2 ) {
 				echo 'selected="selected"';
 			} ?>>2 Columns
@@ -519,7 +521,7 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_hide_filters_callback( $args ) {
 		$description = isset( $args['desc'] ) ? $args['desc'] : '';
 		printf(
-			'<input name="fgp_option_name[fgp_hide_filters]" id="fgp_hide_filters" type="checkbox" value="1" %s> %s',
+			'<input name="fgp_option_name[fgp_hide_filters]" id="fgp_option_name[fgp_hide_filters]" type="checkbox" value="1" %s> %s',
 			checked( $this->options['fgp_hide_filters'], 1, false ), $description
 		);
 	}
@@ -568,11 +570,21 @@ class Fancy_Grid_Portfolio_Admin {
 				}
 			}
 
-
 			$counter ++;
 		}
 
 		wp_send_json_success( 'Portfolio Order Saved' );
+	}
+
+	/**
+	 * Handle image crop for thumbnails
+	 */
+	public function fgp_set_thumbnail_crop_sizes() {
+
+		$crop_width  = isset ( $this->options['fgp_thumbcrop_width'] ) ? $this->options['fgp_thumbcrop_width'] : '';
+		$crop_height = isset ( $this->options['fgp_thumbcrop_height'] ) ? $this->options['fgp_thumbcrop_height'] : '';
+
+		add_image_size( 'fgp_thumbnail', $crop_width, $crop_height, array( 'top', 'center' ) );
 	}
 
 }
