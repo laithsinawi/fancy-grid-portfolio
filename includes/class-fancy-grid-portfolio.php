@@ -169,6 +169,9 @@ class Fancy_Grid_Portfolio {
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'fgp_add_plugin_page');
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'fgp_register_settings');
 
+		// Save reorder items
+		$this->loader->add_action( 'wp_ajax_save_order', $plugin_admin, 'fgp_save_order');
+
 	}
 
 	/**

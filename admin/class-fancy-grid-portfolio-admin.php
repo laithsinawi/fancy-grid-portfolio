@@ -23,11 +23,6 @@
 class Fancy_Grid_Portfolio_Admin {
 
 	/**
-	 * Holds the values to be used in the fields callbacks
-	 */
-	private $options;
-
-	/**
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
@@ -35,6 +30,15 @@ class Fancy_Grid_Portfolio_Admin {
 	 * @var      string $plugin_name The ID of this plugin.
 	 */
 	private $plugin_name;
+
+	/**
+	 * Holds the values to be used in the fields callbacks
+	 *
+	 * @since    1.0.0
+	 * @access    private
+	 * @var    string $options The options for this plugin
+	 */
+	private $options;
 
 	/**
 	 * The version of this plugin.
@@ -79,8 +83,8 @@ class Fancy_Grid_Portfolio_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __DIR__ ) . 'lib/jquery-ui/jquery-ui.min.css', array(), $this->version, 'all' );
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/fancy-grid-portfolio-admin.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '_jquery_ui', plugin_dir_url( __DIR__ ) . 'lib/jquery-ui/jquery-ui.min.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name . '_admin_css', plugin_dir_url( __FILE__ ) . 'css/fancy-grid-portfolio-admin.css', array(), $this->version, 'all' );
 
 	}
 
@@ -103,7 +107,7 @@ class Fancy_Grid_Portfolio_Admin {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/fancy-grid-portfolio-admin.js', array(
+		wp_enqueue_script( $this->plugin_name . '_admin_js', plugin_dir_url( __FILE__ ) . 'js/fancy-grid-portfolio-admin.js', array(
 			'jquery',
 			'jquery-ui-sortable'
 		), $this->version, true );
@@ -111,9 +115,12 @@ class Fancy_Grid_Portfolio_Admin {
 		/**
 		 * TODO: enqueue ajax script
 		 */
-//		wp_localize_script( 'fgp-script', 'FGP_PORTFOLIO', array(
-//			'token' => wp_create_nonce( 'fgp-token' )
-//		) );
+		wp_localize_script( $this->plugin_name . '_admin_js',
+			'FGP_PORTFOLIO',
+			array(
+				'token' => wp_create_nonce( 'fgp-token' )
+			)
+		);
 
 	}
 
@@ -122,13 +129,13 @@ class Fancy_Grid_Portfolio_Admin {
 	 */
 	public function cptui_register_my_cpts_portfolio_item() {
 		$labels = array(
-			"name"          => __( 'Portfolio Items', 'mcst' ),
-			"singular_name" => __( 'Portfolio Item', 'mcst' ),
-			"menu_name"     => __( 'Grid Portfolio', 'mcst' ),
+			"name"          => __( 'Portfolio Items', 'fancy-grid-portfolio' ),
+			"singular_name" => __( 'Portfolio Item', 'fancy-grid-portfolio' ),
+			"menu_name"     => __( 'Grid Portfolio', 'fancy-grid-portfolio' ),
 		);
 
 		$args = array(
-			"label"               => __( 'Portfolio Items', 'mcst' ),
+			"label"               => __( 'Portfolio Items', 'fancy-grid-portfolio' ),
 			"labels"              => $labels,
 			"description"         => "Portfolio in nice grid format that is animated and filterable with beautiful hover overlay of project title and description",
 			"public"              => true,
@@ -150,43 +157,41 @@ class Fancy_Grid_Portfolio_Admin {
 		);
 		register_post_type( "portfolio_item", $args );
 
-		if(function_exists("register_field_group"))
-		{
-			register_field_group(array (
-				'id' => 'acf_portfolio-item-fields',
-				'title' => 'Portfolio Item Fields',
-				'fields' => array (
-					array (
-						'key' => 'field_58192670e2ee2',
-						'label' => 'Project Details',
-						'name' => 'project_details',
-						'type' => 'textarea',
+		if ( function_exists( "register_field_group" ) ) {
+			register_field_group( array(
+				'id'         => 'acf_portfolio-item-fields',
+				'title'      => 'Portfolio Item Fields',
+				'fields'     => array(
+					array(
+						'key'           => 'field_58192670e2ee2',
+						'label'         => 'Project Details',
+						'name'          => 'project_details',
+						'type'          => 'textarea',
 						'default_value' => '',
-						'placeholder' => '',
-						'maxlength' => '',
-						'rows' => '',
-						'formatting' => 'br',
+						'placeholder'   => '',
+						'maxlength'     => '',
+						'rows'          => '',
+						'formatting'    => 'br',
 					),
 				),
-				'location' => array (
-					array (
-						array (
-							'param' => 'post_type',
+				'location'   => array(
+					array(
+						array(
+							'param'    => 'post_type',
 							'operator' => '==',
-							'value' => 'portfolio_item',
+							'value'    => 'portfolio_item',
 							'order_no' => 0,
 							'group_no' => 0,
 						),
 					),
 				),
-				'options' => array (
-					'position' => 'normal',
-					'layout' => 'no_box',
-					'hide_on_screen' => array (
-					),
+				'options'    => array(
+					'position'       => 'normal',
+					'layout'         => 'no_box',
+					'hide_on_screen' => array(),
 				),
 				'menu_order' => 0,
-			));
+			) );
 		}
 
 	}
@@ -196,12 +201,12 @@ class Fancy_Grid_Portfolio_Admin {
 	 */
 	public function cptui_register_my_taxes_portfolio_category() {
 		$labels = array(
-			"name"          => __( 'Portfolio Categories', 'mcst' ),
-			"singular_name" => __( 'Portfolio Category', 'mcst' ),
+			"name"          => __( 'Portfolio Categories', 'fancy-grid-portfolio' ),
+			"singular_name" => __( 'Portfolio Category', 'fancy-grid-portfolio' ),
 		);
 
 		$args = array(
-			"label"              => __( 'Portfolio Categories', 'mcst' ),
+			"label"              => __( 'Portfolio Categories', 'fancy-grid-portfolio' ),
 			"labels"             => $labels,
 			"public"             => false,
 			"hierarchical"       => false,
@@ -263,7 +268,7 @@ class Fancy_Grid_Portfolio_Admin {
 	}
 
 
-	/************** OPTION PAGE RELATED METHODS *******************/
+	/************** OPTIONS PAGE RELATED METHODS *******************/
 
 	/**
 	 * Add options page
@@ -323,14 +328,14 @@ class Fancy_Grid_Portfolio_Admin {
 	 */
 	public function fgp_create_admin_page() {
 		// Set class property
-		$this->options = get_option( 'my_option_name' );
+		$this->options = get_option( 'fgp_option_name' );
 		?>
 		<div class="wrap">
-			<h1>Settings</h1>
+			<h1>Fancy Grid Portfolio</h1>
 			<form method="post" action="options.php">
 				<?php
 				// This prints out all hidden setting fields
-				settings_fields( 'my_option_group' );
+				settings_fields( 'fgp_option_group' );
 				do_settings_sections( $this->plugin_name );
 				submit_button();
 				?>
@@ -343,33 +348,75 @@ class Fancy_Grid_Portfolio_Admin {
 	 * Register and add settings
 	 */
 	public function fgp_register_settings() {
+
 		register_setting(
-			'fgp_settings_group', // Option group
-			'fgp_settings', // Option name
+			'fgp_option_group', // Option group
+			'fgp_option_name', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
 		add_settings_section(
-			'fgp_settings_section', // ID
-			'Fancy Grid Portfolio', // Title
+			$this->plugin_name . '_fields', // ID
+			'Settings', // Title
+			array( $this, 'fgp_fields_callback' ), // Callback
+			$this->plugin_name // Page
+		);
+
+		add_settings_section(
+			$this->plugin_name, // ID
+			'How to Use', // Title
 			array( $this, 'print_section_info' ), // Callback
 			$this->plugin_name // Page
 		);
 
 		add_settings_field(
-			'id_number', // ID
-			'ID Number', // Title
-			array( $this, 'id_number_callback' ), // Callback
-			$this->plugin_name, // Page
-			'fgp_settings_section' // Section
+			'fgp_thumbcrop_width',
+			'Thumbnail Crop Width',
+			array( $this, 'fgp_thumbcrop_width_callback' ),
+			$this->plugin_name,
+			$this->plugin_name . '_fields',
+			array(
+				'label_for' => 'fgp_thumbcrop_width',
+				'desc'      => 'This is for the width that will be cropped for your thumbnail images. Default is 400px.'
+
+			)
 		);
 
 		add_settings_field(
-			'title',
-			'Title',
-			array( $this, 'title_callback' ),
+			'fgp_thumbcrop_height',
+			'Thumbnail Crop Height',
+			array( $this, 'fgp_thumbcrop_height_callback' ),
 			$this->plugin_name,
-			'fgp_settings_section'
+			$this->plugin_name . '_fields',
+			array(
+				'label_for' => 'fgp_thumbcrop_height',
+				'desc'      => 'This is for the height that will be cropped for your thumbnail images. Default is 300px.'
+			)
+		);
+
+		add_settings_field(
+			'fgp_num_cols',
+			'Number of Columns',
+			array( $this, 'fgp_num_cols_callback' ),
+			$this->plugin_name,
+			$this->plugin_name . '_fields',
+			array(
+				'label_for' => 'fgp_num_cols',
+				'desc'      => 'Set the number of columns you want your grid to be. Default is 3 columns. If your page is 1200px wide or more, you may want 4 columns.'
+			)
+		);
+
+		add_settings_field(
+			'fgp_hide_filters',
+			'Hide Filter Categories',
+			array( $this, 'fgp_hide_filters_callback' ),
+			$this->plugin_name,
+			$this->plugin_name . '_fields',
+			array(
+				'label_for' => 'fgp_hide_filters',
+				'desc'      => 'Select this option to hide category filters. You can override this in
+							shortcode attributes too.'
+			)
 		);
 
 	}
@@ -378,15 +425,26 @@ class Fancy_Grid_Portfolio_Admin {
 	 * Sanitize each setting field as needed
 	 *
 	 * @param array $input Contains all settings fields as array keys
+	 *
+	 * @return array       Contains settings with sanitized values
 	 */
 	public function sanitize( $input ) {
 		$new_input = array();
-		if ( isset( $input['id_number'] ) ) {
-			$new_input['id_number'] = absint( $input['id_number'] );
+
+		if ( isset( $input['fgp_thumbcrop_width'] ) ) {
+			$new_input['fgp_thumbcrop_width'] = absint( $input['fgp_thumbcrop_width'] );
 		}
 
-		if ( isset( $input['title'] ) ) {
-			$new_input['title'] = sanitize_text_field( $input['title'] );
+		if ( isset( $input['fgp_thumbcrop_height'] ) ) {
+			$new_input['fgp_thumbcrop_height'] = absint( $input['fgp_thumbcrop_height'] );
+		}
+
+		if ( isset( $input['fgp_num_cols'] ) ) {
+			$new_input['fgp_num_cols'] = sanitize_option( 'fgp_num_cols', $input['fgp_num_cols'] );
+		}
+
+		if ( isset( $input['fgp_hide_filters'] ) ) {
+			$new_input['fgp_hide_filters'] = filter_var( $input['fgp_hide_filters'], FILTER_SANITIZE_NUMBER_INT );
 		}
 
 		return $new_input;
@@ -396,37 +454,125 @@ class Fancy_Grid_Portfolio_Admin {
 	 * Print the Section text
 	 */
 	public function print_section_info() {
-
 		include_once 'partials/fancy-grid-portfolio-section-info.php';
-
 	}
 
 	/**
-	 * Get the settings option array and print one of its values
+	 * Print the Fields section text
 	 */
-	public function id_number_callback() {
+	public function fgp_fields_callback() {
+		// Output for fields section - doing nothing!
+		// Callback function required by add_settings_section()
+	}
+
+	/**
+	 * Get the settings option array and print  one of its values
+	 */
+	public function fgp_thumbcrop_width_callback( $args ) {
+		$description = $args['desc'];
 		printf(
-			'<input type="text" id="id_number" name="my_option_name[id_number]" value="%s" />',
-			isset( $this->options['id_number'] ) ? esc_attr( $this->options['id_number'] ) : ''
+			'<input type="text" id="fgp_thumbcrop_width" name="fgp_option_name[fgp_thumbcrop_width]" value="%s" /> px
+			<p class="description">%s</p>',
+			! empty( $this->options['fgp_thumbcrop_width'] ) ? esc_attr( $this->options['fgp_thumbcrop_width'] ) : 400,
+			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
 		);
 	}
 
 	/**
-	 * Get the settings option array and print one of its values
+	 * Get the settings option array and print  one of its values
 	 */
-	public function title_callback() {
+	public function fgp_thumbcrop_height_callback( $args ) {
+		$description = $args['desc'];
 		printf(
-			'<input type="text" id="title" name="my_option_name[title]" value="%s" />',
-			isset( $this->options['title'] ) ? esc_attr( $this->options['title'] ) : ''
+			'<input type="text" id="fgp_thumbcrop_height" name="fgp_option_name[fgp_thumbcrop_height]" value="%s" /> px
+			<p class="description">%s</p>',
+			! empty( $this->options['fgp_thumbcrop_height'] ) ? esc_attr( $this->options['fgp_thumbcrop_height'] ) : 300,
+			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
 		);
 	}
 
-	/*
- * List portfolio items for drag drop reorder
- */
+	/**
+	 * Get the settings option array and print  one of its values
+	 */
+	public function fgp_num_cols_callback( $args ) {
+		$description = isset( $args['desc'] ) ? $args['desc'] : '';
+		$num_columns = isset( $this->options['fgp_num_cols'] ) ? $this->options['fgp_num_cols'] : 3;
+		?>
+		<select name="fgp_option_name[fgp_num_cols]" id="fgp_num_cols">
+			<option value="2" <?php if ( $num_columns == 2 ) {
+				echo 'selected="selected"';
+			} ?>>2 Columns
+			</option>
+			<option value="3" <?php if ( $num_columns == 3 ) {
+				echo 'selected="selected"';
+			} ?>>3 Columns
+			</option>
+			<option value="4" <?php if ( $num_columns == 4 ) {
+				echo 'selected="selected"';
+			} ?>>4 Columns
+			</option>
+		</select>
+		<p class="description"><?php _e( $description, 'fancy-grid-portfolio' ) ?></p>
+		<?php
+	}
+
+	public function fgp_hide_filters_callback( $args ) {
+		$description = isset( $args['desc'] ) ? $args['desc'] : '';
+		printf(
+			'<input name="fgp_option_name[fgp_hide_filters]" id="fgp_hide_filters" type="checkbox" value="1" %s> %s',
+			checked( $this->options['fgp_hide_filters'], 1, false ), $description
+		);
+	}
+
+
+	/**
+	 * List portfolio items for drag drop reorder
+	 */
 	function fgp_reorder_portfolio_callback() {
 
 		include_once 'partials/fancy-grid-portfolio-reorder.php';
 
 	}
+
+	/**
+	 * Save Reorder
+	 */
+	public function fgp_save_order() {
+		// Check nonce
+		if ( ! check_ajax_referer( 'fgp-token', 'token' ) ) {
+			return wp_send_json_error( 'Invalid Token' );
+		}
+
+		// Check user permissions
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return wp_send_json_error( 'Not Authorized' );
+		}
+
+		$order = $_POST['order'];
+
+		$counter = 0;
+
+		foreach ( $order as $item_id ) {
+			$portfolio_item = array(
+				'ID'         => (int) $item_id,
+				'menu_order' => $counter
+			);
+
+			//wp_update_post( $portfolio_item );
+
+			$post_id = wp_update_post( $portfolio_item, true );
+			if ( is_wp_error( $post_id ) ) {
+				$errors = $post_id->get_error_messages();
+				foreach ( $errors as $error ) {
+					echo $error;
+				}
+			}
+
+
+			$counter ++;
+		}
+
+		wp_send_json_success( 'Portfolio Order Saved' );
+	}
+
 }

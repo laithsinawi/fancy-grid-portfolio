@@ -4,7 +4,7 @@ $args = array(
 	'order_by'               => 'menu_order',
 	'order'                  => 'ASC',
 	'post_status'            => 'publish',
-	'no_found_rows'          => 'true',
+	'no_found_rows'          => true,
 	'update_post_term_cache' => false,
 	'post_per_page'          => 50
 );

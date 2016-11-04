@@ -1,32 +1,49 @@
-(function( $ ) {
-	'use strict';
+(function ($) {
+    'use strict';
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+    /*
+     Do drag drop sort using jQuery UI
+     */
+    var portfolioSortList = $('ul#portfolio-sort-list');
+    var loading = $('.loading');
+    var orderSaveMsg = $('.order-save-msg');
+    var orderSaveErr = $('.order-save-err');
 
-})( jQuery );
+    portfolioSortList.sortable({
+        update: function (e, ui) {
+            loading.show();
+
+            $.ajax({
+                url: ajaxurl, // WordPress ajax URL
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    action: 'save_order',  //
+                    order: portfolioSortList.sortable('toArray'),
+                    token: FGP_PORTFOLIO.token
+                },
+                success: function (res) {
+                    loading.hide();
+                    if (true === res.success) {
+                        orderSaveMsg.show();
+                        setTimeout(function () {
+                            orderSaveMsg.hide();
+                        }, 2000);
+                    } else {
+                        orderSaveErr.show();
+                        setTimeout(function () {
+                            orderSaveErr.hide();
+                        }, 2000);
+                    }
+                },
+                error: function (err) {
+                    orderSaveErr.show();
+                    setTimeout(function () {
+                        orderSaveErr.hide();
+                    }, 2000);
+                }
+            });
+        }
+    });
+
+})(jQuery);
