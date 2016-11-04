@@ -159,7 +159,7 @@ class Fancy_Grid_Portfolio {
 
 		// Custom post type
 		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_cpts_portfolio_item' );
-		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_category' );
+		$this->loader->add_action( 'init', $plugin_admin, 'cptui_register_my_taxes_portfolio_categories' );
 
 		// Custom post admin columns
 		$this->loader->add_action( 'manage_portfolio_item_posts_columns', $plugin_admin, 'fgp_columns_header', 10 );

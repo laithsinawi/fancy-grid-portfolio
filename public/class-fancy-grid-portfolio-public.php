@@ -188,7 +188,7 @@ class Fancy_Grid_Portfolio_Public {
 
 				$portfolio->the_post();
 
-				$terms = wp_get_post_terms( get_the_ID(), 'portfolio_category' );
+				$terms = wp_get_post_terms( get_the_ID(), 'portfolio_categories' );
 
 				$filter_classes = '';
 				foreach ( $terms as $term ) {
@@ -226,8 +226,8 @@ class Fancy_Grid_Portfolio_Public {
 	public function fpg_get_filters( $post ) {
 
 		// Get taxonomy terms
-		$terms = get_terms( 'portfolio_category', array(
-			'taxonomy'   => 'portfolio_category',
+		$terms = get_terms( 'portfolio_categories', array(
+			'taxonomy'   => 'portfolio_categories',
 			'hide_empty' => true,
 			'parent'     => 0,
 		) );

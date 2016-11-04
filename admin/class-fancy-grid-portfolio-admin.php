@@ -199,9 +199,9 @@ class Fancy_Grid_Portfolio_Admin {
 	}
 
 	/**
-	 * Register taxonomy portfolio_category
+	 * Register taxonomy portfolio_categories
 	 */
-	public function cptui_register_my_taxes_portfolio_category() {
+	public function cptui_register_my_taxes_portfolio_categories() {
 		$labels = array(
 			"name"          => __( 'Portfolio Categories', 'fancy-grid-portfolio' ),
 			"singular_name" => __( 'Portfolio Category', 'fancy-grid-portfolio' ),
@@ -222,7 +222,7 @@ class Fancy_Grid_Portfolio_Admin {
 			"rest_base"          => "",
 			"show_in_quick_edit" => false,
 		);
-		register_taxonomy( "portfolio_category", array( "portfolio_item" ), $args );
+		register_taxonomy( "portfolio_categories", array( "portfolio_item" ), $args );
 
 	}
 
@@ -251,7 +251,7 @@ class Fancy_Grid_Portfolio_Admin {
 		switch ( $column_name ) {
 			case 'category':
 
-				$terms = wp_get_post_terms( $post_id, 'portfolio_category' );
+				$terms = wp_get_post_terms( $post_id, 'portfolio_categories' );
 
 				if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
 					foreach ( $terms as $term ) {
@@ -278,8 +278,8 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_add_plugin_page() {
 		// This page will in admin mainn menu
 		add_menu_page(
-			'Grid Portfolio - Dashboard',
-			'Grid Portfolio',
+			__( 'Grid Portfolio - Dashboard', 'fancy-grid-portfolio' ),
+			__( 'Grid Portfolio', 'fancy-grid-portfolio' ),
 			'manage_options',
 			$this->plugin_name,
 			array( $this, 'fgp_create_admin_page' ),
@@ -289,8 +289,8 @@ class Fancy_Grid_Portfolio_Admin {
 
 		add_submenu_page(
 			$this->plugin_name,
-			'TEST',
-			__( 'Dashboard' ),
+			__( 'Dashboard', 'fancy-grid-portfolio' ),
+			__( 'Dashboard', 'fancy-grid-portfolio' ),
 			'manage_options',
 			$this->plugin_name,
 			array( $this, 'fgp_create_admin_page' )
@@ -298,8 +298,8 @@ class Fancy_Grid_Portfolio_Admin {
 
 		add_submenu_page(
 			$this->plugin_name,
-			__( 'Portfolio Items' ),
-			__( 'Portfolio Items' ),
+			__( 'Portfolio Items', 'fancy-grid-portfolio' ),
+			__( 'Portfolio Items', 'fancy-grid-portfolio' ),
 			'manage_options',
 			'edit.php?post_type=portfolio_item',
 			null
@@ -307,8 +307,8 @@ class Fancy_Grid_Portfolio_Admin {
 
 		add_submenu_page(
 			$this->plugin_name,
-			__( 'Drag Drop Sort' ),
-			__( 'Drag Drop Sort' ),
+			__( 'Drag Drop Sort', 'fancy-grid-portfolio' ),
+			__( 'Drag Drop Sort', 'fancy-grid-portfolio' ),
 			'manage_options',
 			'custom-order',
 			array( $this, 'fgp_reorder_portfolio_callback' )
@@ -316,10 +316,10 @@ class Fancy_Grid_Portfolio_Admin {
 
 		add_submenu_page(
 			$this->plugin_name,
-			__( 'Portfolio Categories' ),
-			__( 'Portfolio Categories' ),
+			__( 'Portfolio Categories', 'fancy-grid-portfolio' ),
+			__( 'Portfolio Categories', 'fancy-grid-portfolio' ),
 			'manage_options',
-			'edit-tags.php?taxonomy=portfolio_category',
+			'edit-tags.php?taxonomy=portfolio_categories',
 			null
 		);
 
