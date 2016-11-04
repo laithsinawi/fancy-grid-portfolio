@@ -117,7 +117,7 @@ class Fancy_Grid_Portfolio_Admin {
 			true
 		);
 
-		wp_localize_script( $this->plugin_name . '_admin_js',
+		wp_localize_script( $this->plugin_name . '-admin-js',
 			'FGP_PORTFOLIO',
 			array(
 				'token' => wp_create_nonce( 'fgp-token' )
@@ -520,9 +520,10 @@ class Fancy_Grid_Portfolio_Admin {
 
 	public function fgp_hide_filters_callback( $args ) {
 		$description = isset( $args['desc'] ) ? $args['desc'] : '';
+		$is_checked  = isset( $this->options['fgp_hide_filters'] ) ? $this->options['fgp_hide_filters'] : 0;
 		printf(
 			'<input name="fgp_option_name[fgp_hide_filters]" id="fgp_option_name[fgp_hide_filters]" type="checkbox" value="1" %s> %s',
-			checked( $this->options['fgp_hide_filters'], 1, false ), $description
+			checked( $is_checked, 1, false ), $description
 		);
 	}
 
