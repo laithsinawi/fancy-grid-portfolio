@@ -139,9 +139,9 @@ class Fancy_Grid_Portfolio_Public {
 
 		$this->options = get_option( 'fgp_option_name' );
 
-		$hide_filters = isset( $this->options['fgp_hide_filters'] ) ? $this->options['fgp_hide_filters'] : '';
-		$num_posts    = isset( $this->options['fgp_num_posts'] ) ? $this->options['fgp_num_posts'] : - 1;
-		$num_columns  = isset( $this->options['fgp_num_cols'] ) ? $this->options['fgp_num_cols'] : '';
+		$hide_filters = isset( $this->options['hide_filters'] ) ? $this->options['hide_filters'] : '';
+		$num_posts    = isset( $this->options['num_posts'] ) ? $this->options['num_posts'] : - 1;
+		$num_columns  = isset( $this->options['num_columns'] ) ? $this->options['num_columns'] : '';
 
 		$atts = shortcode_atts( array(
 			'count'        => $num_posts,
