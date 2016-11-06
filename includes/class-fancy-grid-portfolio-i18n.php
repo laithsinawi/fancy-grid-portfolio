@@ -43,5 +43,4 @@ class Fancy_Grid_Portfolio_i18n {
 	}
 
 
-
 }

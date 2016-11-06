@@ -61,6 +61,7 @@ class Fancy_Grid_Portfolio_Admin {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
+		$this->options     = get_option( 'fgp_settings' );
 
 	}
 
@@ -330,7 +331,7 @@ class Fancy_Grid_Portfolio_Admin {
 	 */
 	public function fgp_create_admin_page() {
 		// Set class property
-		$this->options = get_option( 'fgp_option_name' );
+		$this->options = get_option( 'fgp_settings' );
 		?>
 		<div class="wrap">
 			<h1>Fancy Grid Portfolio</h1>
@@ -353,7 +354,7 @@ class Fancy_Grid_Portfolio_Admin {
 
 		register_setting(
 			'fgp_option_group', // Option group
-			'fgp_option_name', // Option name
+			'fgp_settings', // Option name
 			array( $this, 'sanitize' ) // Sanitize
 		);
 
@@ -473,7 +474,7 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_thumbcrop_width_callback( $args ) {
 		$description = $args['desc'];
 		printf(
-			'<input type="text" id="fgp_option_name[thumbcrop_width]" name="fgp_option_name[thumbcrop_width]" value="%s" /> px
+			'<input type="text" id="fgp_settings[thumbcrop_width]" name="fgp_settings[thumbcrop_width]" value="%s" /> px
 			<p class="description">%s</p>',
 			! empty( $this->options['thumbcrop_width'] ) ? esc_attr( $this->options['thumbcrop_width'] ) : 400,
 			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
@@ -486,7 +487,7 @@ class Fancy_Grid_Portfolio_Admin {
 	public function fgp_thumbcrop_height_callback( $args ) {
 		$description = $args['desc'];
 		printf(
-			'<input type="text" id="fgp_option_name[thumbcrop_height]" name="fgp_option_name[thumbcrop_height]" value="%s" /> px
+			'<input type="text" id="fgp_settings[thumbcrop_height]" name="fgp_settings[thumbcrop_height]" value="%s" /> px
 			<p class="description">%s</p>',
 			! empty( $this->options['thumbcrop_height'] ) ? esc_attr( $this->options['thumbcrop_height'] ) : 300,
 			isset( $description ) ? __( $description, 'fancy-grid-portfolio' ) : ''
@@ -500,7 +501,7 @@ class Fancy_Grid_Portfolio_Admin {
 		$description = isset( $args['desc'] ) ? $args['desc'] : '';
 		$num_columns = isset( $this->options['num_columns'] ) ? $this->options['num_columns'] : 3;
 		?>
-		<select name="fgp_option_name[num_columns]" id="fgp_option_name[num_columns]">
+		<select name="fgp_settings[num_columns]" id="fgp_settings[num_columns]">
 			<option value="2" <?php if ( $num_columns == 2 ) {
 				echo 'selected="selected"';
 			} ?>>2 Columns
@@ -522,7 +523,7 @@ class Fancy_Grid_Portfolio_Admin {
 		$description = isset( $args['desc'] ) ? $args['desc'] : '';
 		$is_checked  = isset( $this->options['hide_filters'] ) ? $this->options['hide_filters'] : 0;
 		printf(
-			'<input name="fgp_option_name[hide_filters]" id="fgp_option_name[hide_filters]" type="checkbox" value="1" %s> %s',
+			'<input name="fgp_settings[hide_filters]" id="fgp_settings[hide_filters]" type="checkbox" value="1" %s> %s',
 			checked( $is_checked, 1, false ), $description
 		);
 	}
@@ -582,8 +583,9 @@ class Fancy_Grid_Portfolio_Admin {
 	 */
 	public function fgp_set_thumbnail_crop_sizes() {
 
-		$crop_width  = isset ( $this->options['thumbcrop_width'] ) ? $this->options['thumbcrop_width'] : '';
-		$crop_height = isset ( $this->options['thumbcrop_height'] ) ? $this->options['thumbcrop_height'] : '';
+		$this->options = get_option( 'fgp_settings' );
+		$crop_width    = isset ( $this->options['thumbcrop_width'] ) ? $this->options['thumbcrop_width'] : '';
+		$crop_height   = isset ( $this->options['thumbcrop_height'] ) ? $this->options['thumbcrop_height'] : '';
 
 		add_image_size( 'fgp_thumbnail', $crop_width, $crop_height, array( 'top', 'center' ) );
 	}

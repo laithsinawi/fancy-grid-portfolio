@@ -2,19 +2,20 @@
     width: 45%;
 }
 
-@media(max-width: 768px) {
+@media (max-width: 768px) {
     #fgp-gallery li {
         width: 100%;
         margin-right: 8px;
     }
 }
 
-@media(max-width: 568px) {
+@media (max-width: 568px) {
 
     #fgp-gallery li {
         width: 100%;
         margin: 0;
     }
+
     #fgp-filters {
         margin: 0;
     }

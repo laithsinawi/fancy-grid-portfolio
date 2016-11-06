@@ -61,7 +61,7 @@ class Fancy_Grid_Portfolio_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version     = $version;
-
+		$this->options     = get_option( 'fgp_settings' );
 	}
 
 	/**
@@ -135,9 +135,9 @@ class Fancy_Grid_Portfolio_Public {
 	 */
 	function fgp_list_portfolio_items( $atts, $content = null ) {
 
-		global $post, $template_css;
+		global $post;
 
-		$this->options = get_option( 'fgp_option_name' );
+		$this->options = get_option( 'fgp_settings' );
 
 		$hide_filters = isset( $this->options['hide_filters'] ) ? $this->options['hide_filters'] : '';
 		$num_posts    = isset( $this->options['num_posts'] ) ? $this->options['num_posts'] : - 1;
@@ -152,7 +152,7 @@ class Fancy_Grid_Portfolio_Public {
 
 		$pagination = $atts['pagination'] == 'on' ? false : true;
 
-		// if shortcode attr hide_filters is set, override global setting
+		// If shortcode attr hide_filters is set, override global setting
 		$hide_filters = isset( $atts['hide_filters'] ) ? $atts['hide_filters'] : $hide_filters;
 		$num_columns  = isset( $atts['num_columns'] ) ? $atts['num_columns'] : $num_columns;
 		wp_enqueue_style( 'fancy-grid-portfolio-' . $num_columns . 'col-css' ); // Enqueue the appropriate grid stylesheet
@@ -172,7 +172,7 @@ class Fancy_Grid_Portfolio_Public {
 		// Get Portfolio from DB
 		$portfolio = new WP_Query( $args );
 
-		// Check for Portfolio items
+		// Loop thru portfolio items and build html output
 		if ( $portfolio->have_posts() ) :
 			$output = '<div id="fgp-portfolio">';
 

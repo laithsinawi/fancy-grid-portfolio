@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 /*
 *  Revisions
@@ -9,8 +9,7 @@
 *  @date	11/08/13
 */
 
-class acf_revisions
-{
+class acf_revisions {
 
 	/*
 	*  __construct
@@ -23,19 +22,18 @@ class acf_revisions
 	*  @param	N/A
 	*  @return	N/A
 	*/
-	
-	function __construct()
-	{
+
+	function __construct() {
 		// actions		
-		add_action('wp_restore_post_revision', array($this, 'wp_restore_post_revision'), 10, 2 );
-		
-		
+		add_action( 'wp_restore_post_revision', array( $this, 'wp_restore_post_revision' ), 10, 2 );
+
+
 		// filters
-		add_filter('_wp_post_revision_fields', array($this, 'wp_post_revision_fields') );
-		add_filter('wp_save_post_revision_check_for_changes', array($this, 'force_save_revision'), 10, 3);
+		add_filter( '_wp_post_revision_fields', array( $this, 'wp_post_revision_fields' ) );
+		add_filter( 'wp_save_post_revision_check_for_changes', array( $this, 'force_save_revision' ), 10, 3 );
 	}
-	
-	
+
+
 	/*
 	*  force_save_revision
 	*
@@ -50,21 +48,19 @@ class acf_revisions
 	*  @param	$post (object) the $post that WP will compare against
 	*  @return	$return (boolean)
 	*/
-	
-	function force_save_revision( $return, $last_revision, $post )
-	{
+
+	function force_save_revision( $return, $last_revision, $post ) {
 		// preview hack
-		if( isset($_POST['acf_has_changed']) && $_POST['acf_has_changed'] == '1' )
-		{
+		if ( isset( $_POST['acf_has_changed'] ) && $_POST['acf_has_changed'] == '1' ) {
 			$return = false;
 		}
-		
-		
+
+
 		// return
 		return $return;
 	}
-	
-	
+
+
 	/*
 	*  wp_post_revision_fields
 	*
@@ -78,100 +74,91 @@ class acf_revisions
 	*  @param	$post_id (int)
 	*  @return	$post_id (int)
 	*/
-		
+
 	function wp_post_revision_fields( $return ) {
-		
-		
+
+
 		//globals
 		global $post, $pagenow;
-		
+
 
 		// validate
 		$allowed = false;
-		
-		
+
+
 		// Normal revisions page
-		if( $pagenow == 'revision.php' )
-		{
+		if ( $pagenow == 'revision.php' ) {
 			$allowed = true;
 		}
-		
-		
+
+
 		// WP 3.6 AJAX revision
-		if( $pagenow == 'admin-ajax.php' && isset($_POST['action']) && $_POST['action'] == 'get-revision-diffs' )
-		{
+		if ( $pagenow == 'admin-ajax.php' && isset( $_POST['action'] ) && $_POST['action'] == 'get-revision-diffs' ) {
 			$allowed = true;
 		}
-		
-		
+
+
 		// bail
-		if( !$allowed ) 
-		{
+		if ( ! $allowed ) {
 			return $return;
 		}
-		
-		
+
+
 		// vars
 		$post_id = 0;
-		
-		
+
+
 		// determine $post_id
-		if( isset($_POST['post_id']) )
-		{
+		if ( isset( $_POST['post_id'] ) ) {
 			$post_id = $_POST['post_id'];
-		}
-		elseif( isset($post->ID) )
-		{
+		} elseif ( isset( $post->ID ) ) {
 			$post_id = $post->ID;
-		}
-		else
-		{
+		} else {
 			return $return;
 		}
-		
-		
+
+
 		// get field objects
-		$fields = get_field_objects( $post_id, array('format_value' => false ) );
-		
-		
-		if( $fields )
-		{
-			foreach( $fields as $field )
-			{
+		$fields = get_field_objects( $post_id, array( 'format_value' => false ) );
+
+
+		if ( $fields ) {
+			foreach ( $fields as $field ) {
 				// dud field?
-				if( !$field || !isset($field['name']) || !$field['name'] )
-				{
+				if ( ! $field || ! isset( $field['name'] ) || ! $field['name'] ) {
 					continue;
 				}
-				
-				
+
+
 				// Add field key / label
 				$return[ $field['name'] ] = $field['label'];
 
 
 				// load value
-				add_filter('_wp_post_revision_field_' . $field['name'], array($this, 'wp_post_revision_field'), 10, 4);
-				
-				
+				add_filter( '_wp_post_revision_field_' . $field['name'], array(
+					$this,
+					'wp_post_revision_field'
+				), 10, 4 );
+
+
 				// WP 3.5: left vs right
 				// Add a value of the revision ID (as there is no way to determine this within the '_wp_post_revision_field_' filter!)
-				if( isset($_GET['action'], $_GET['left'], $_GET['right']) && $_GET['action'] == 'diff' )
-				{
+				if ( isset( $_GET['action'], $_GET['left'], $_GET['right'] ) && $_GET['action'] == 'diff' ) {
 					global $left_revision, $right_revision;
-					
-					$left_revision->$field['name'] = 'revision_id=' . $_GET['left'];
+
+					$left_revision->$field['name']  = 'revision_id=' . $_GET['left'];
 					$right_revision->$field['name'] = 'revision_id=' . $_GET['right'];
 				}
-								
+
 			}
 		}
-		
-		
+
+
 		return $return;
-	
+
 	}
-	
-	
+
+
 	/*
 	*  wp_post_revision_field
 	*
@@ -186,60 +173,51 @@ class acf_revisions
 	*  @param	$direction (string) to / from - not used
 	*  @return	$value (string)
 	*/
-	
-	function wp_post_revision_field( $value, $field_name, $post = null, $direction = false)
-	{
+
+	function wp_post_revision_field( $value, $field_name, $post = null, $direction = false ) {
 		// vars
 		$post_id = 0;
-		
-		
+
+
 		// determine $post_id
-		if( isset($post->ID) )
-		{
+		if ( isset( $post->ID ) ) {
 			// WP 3.6
 			$post_id = $post->ID;
-		}
-		elseif( isset($_GET['revision']) )
-		{
+		} elseif ( isset( $_GET['revision'] ) ) {
 			// WP 3.5
 			$post_id = (int) $_GET['revision'];
-		}
-		elseif( strpos($value, 'revision_id=') !== false )
-		{
+		} elseif ( strpos( $value, 'revision_id=' ) !== false ) {
 			// WP 3.5 (left vs right)
-			$post_id = (int) str_replace('revision_id=', '', $value);
+			$post_id = (int) str_replace( 'revision_id=', '', $value );
 		}
-		
-		
+
+
 		// load field
-		$field = get_field_object($field_name, $post_id, array('format_value' => false ));
+		$field = get_field_object( $field_name, $post_id, array( 'format_value' => false ) );
 		$value = $field['value'];
-		
-		
+
+
 		// default formatting
-		if( is_array($value) )
-		{
-			$value = implode(', ', $value);
+		if ( is_array( $value ) ) {
+			$value = implode( ', ', $value );
 		}
-		
-		
+
+
 		// format
-		if( $value )
-		{
+		if ( $value ) {
 			// image?
-			if( $field['type'] == 'image' || $field['type'] == 'file' )
-			{
-				$url = wp_get_attachment_url($value);
+			if ( $field['type'] == 'image' || $field['type'] == 'file' ) {
+				$url   = wp_get_attachment_url( $value );
 				$value = $value . ' (' . $url . ')';
 			}
 		}
-		
-		
+
+
 		// return
 		return $value;
 	}
-	
-	
+
+
 	/*
 	*  wp_restore_post_revision
 	*
@@ -251,65 +229,58 @@ class acf_revisions
 	*  @param	$parent_id (int) the destination post
 	*  @return	$revision_id (int) the source post
 	*/
-	
+
 	function wp_restore_post_revision( $post_id, $revision_id ) {
-	
+
 		// global
 		global $wpdb;
-		
-		
+
+
 		// vars
 		$fields = array();
-		
-		
+
+
 		// get field from postmeta
 		$rows = $wpdb->get_results( $wpdb->prepare(
-			"SELECT * FROM $wpdb->postmeta WHERE post_id=%d", 
+			"SELECT * FROM $wpdb->postmeta WHERE post_id=%d",
 			$revision_id
-		), ARRAY_A);
-		
-		
+		), ARRAY_A );
+
+
 		// populate $fields
-		if( $rows )
-		{
-			foreach( $rows as $row )
-			{
+		if ( $rows ) {
+			foreach ( $rows as $row ) {
 				// meta_key must start with '_'
-				if( substr($row['meta_key'], 0, 1) !== '_' )
-				{
+				if ( substr( $row['meta_key'], 0, 1 ) !== '_' ) {
 					continue;
 				}
-				
-				
+
+
 				// meta_value must start with 'field_'
-				if( substr($row['meta_value'], 0, 6) !== 'field_' )
-				{
+				if ( substr( $row['meta_value'], 0, 6 ) !== 'field_' ) {
 					continue;
 				}
-				
-				
+
+
 				// this is an ACF field, append to $fields
-				$fields[] = substr($row['meta_key'], 1);
-				
+				$fields[] = substr( $row['meta_key'], 1 );
+
 			}
 		}
-		
-		
+
+
 		// save data
-		if( $rows )
-		{
-			foreach( $rows as $row )
-			{
-				if( in_array($row['meta_key'], $fields) )
-				{
+		if ( $rows ) {
+			foreach ( $rows as $row ) {
+				if ( in_array( $row['meta_key'], $fields ) ) {
 					update_post_meta( $post_id, $row['meta_key'], $row['meta_value'] );
 				}
 			}
 		}
-			
+
 	}
-	
-			
+
+
 }
 
 new acf_revisions();

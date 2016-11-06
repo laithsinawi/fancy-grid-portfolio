@@ -77,4 +77,5 @@ function run_fancy_grid_portfolio() {
 	$plugin->run();
 
 }
+
 run_fancy_grid_portfolio();
