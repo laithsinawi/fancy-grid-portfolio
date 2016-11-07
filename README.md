@@ -43,7 +43,7 @@ Create portfolio in nice grid format that is animated and filterable with beauti
 
 ### Usage
 
-1. Add Portfolio Items - Title, Description, and Image
+1. Add Portfolio Items - Title, Description, Image and Category(s)
 1. Create page, menu item and include shortcode in page	`[fgp_portfolio]`
 1. You can override "Hide Filter Categories" setting in shortcode by using "hide_filters" attribute (see example below)
 1. Reorder your portfolio items using Drag and Drop Sort
