@@ -87,6 +87,7 @@
 
 #fgp-gallery .overlay p {
     font-size: 13px;
+    color: #fff !important;
 }
 
 /* Required for MixItUp filters */

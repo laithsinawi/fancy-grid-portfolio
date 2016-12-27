@@ -2,7 +2,7 @@
 Contributors: laith3
 Tags: projects portfolio, filterable portfolio, portfolio, portfolio gallery, Responsive Portfolio, animated portfolio grid, hover effect with lightbox
 Requires at least: 4.1.1
-Tested up to: 4.6.1
+Tested up to: 4.7.1
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -74,6 +74,10 @@ You should upload images and not use existing ones from the media library for yo
 
 == Changelog ==
 
+= version 2.0.1 =
+Tested on WordPress version 4.7.1
+Added CSS namespace for description overlay color getting overwritten by some theme's CSS
+
 = version 2.0 =
 * Complete new code base - change from procedure programming to object oriented programming using WordPress best practises.
 * New feature - added shortcode option to specify number of posts
@@ -87,6 +91,9 @@ You should upload images and not use existing ones from the media library for yo
 * Initial release
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+Tested on WordPress 4.7 and minor bug fix - see Changelog
 
 = 2.0 =
 Bug fixes and new features - see changelog

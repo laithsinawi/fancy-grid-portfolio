@@ -93,6 +93,9 @@ You should upload images and not use existing ones from the media library for yo
 
 ## Changelog 
 
+### version 2.0.1
+Tested on WordPress version 4.7.1
+Added CSS namespace for description overlay color getting overwritten by some theme's CSS
 
 ### version 2.0 
 * Complete new code base - change from procedure programming to object oriented programming using WordPress best practises.
@@ -111,6 +114,8 @@ You should upload images and not use existing ones from the media library for yo
 
 ## Upgrade Notice 
 
+### 2.0.1
+Tested on WordPress 4.7 and minor bug fix - see Changelog
 
 ### 2.0 
 Bug fixes and new features - see changelog
