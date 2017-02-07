@@ -98,4 +98,4 @@ Tested on WordPress 4.7 and minor bug fix - see Changelog
 = 2.0 =
 Bug fixes and new features - see changelog
 
-
+Update with new version info
