@@ -69,7 +69,7 @@ class Fancy_Grid_Portfolio {
 	public function __construct() {
 
 		$this->plugin_name = 'fancy-grid-portfolio';
-		$this->version     = '2.0.1';
+		$this->version     = '2.0.2';
 
 		$this->load_dependencies();
 		$this->set_locale();

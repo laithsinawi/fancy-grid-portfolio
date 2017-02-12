@@ -16,7 +16,7 @@
  * Plugin Name:       Fancy Grid Portfolio
  * Plugin URI:        http://www.sinawiwebdesign.com/wordpress-plugins/fancy-grid-portfolio
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           2.0.1
+ * Version:           2.0.2
  * Author:            Laith Sinawi
  * Author URI:        http://www.sinawiwebdesign.com
  * License:           GPL-2.0+
