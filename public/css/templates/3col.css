@@ -3,6 +3,7 @@
     margin: 0 12px 12px 0;
 }
 
+
 @media (max-width: 768px) {
     #fgp-gallery li {
         width: 48%;
